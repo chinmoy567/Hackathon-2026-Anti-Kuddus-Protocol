@@ -3,6 +3,8 @@ import { useGetLedgerSummaryQuery } from "../store/apiSlice.js";
 import { useLedgerSocket } from "../hooks/useLedgerSocket.js";
 import { LedgerLiveCounters } from "../components/ledger/LedgerLiveCounters.jsx";
 import { LedgerTimeSeriesChart } from "../components/ledger/LedgerTimeSeriesChart.jsx";
+import { CaloricDisparityPanel } from "../components/ledger/CaloricDisparityPanel.jsx";
+import { WeaponryConversionPanel } from "../components/ledger/WeaponryConversionPanel.jsx";
 import { Card } from "../components/ui/Card.jsx";
 import { Skeleton } from "../components/ui/Skeleton.jsx";
 
@@ -67,6 +69,10 @@ export const LedgerDashboardPage = () => {
                 unit="items"
               />
             </Card>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <CaloricDisparityPanel caloricSurplus={data.caloricSurplus} />
+            <WeaponryConversionPanel conversions={data.conversions} />
           </div>
         </>
       )}

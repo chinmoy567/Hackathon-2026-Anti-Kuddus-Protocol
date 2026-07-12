@@ -26,7 +26,7 @@ const axiosBaseQuery =
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["Complaints", "StrikeState", "SosAlerts", "SeatStudents"],
+  tagTypes: ["Complaints", "StrikeState", "SosAlerts", "SeatStudents", "SeatPlans"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: ({ rollNumber, pin }) => ({ url: ENDPOINTS.login, method: "POST", data: { rollNumber, pin } }),
@@ -119,6 +119,16 @@ export const apiSlice = createApi({
       query: (batchId) => ({ url: ENDPOINTS.seatStudentGet(batchId), method: "GET" }),
       providesTags: ["SeatStudents"],
     }),
+
+    postSeatPlan: builder.mutation({
+      query: (body) => ({ url: ENDPOINTS.seatPlans, method: "POST", data: body }),
+      invalidatesTags: ["SeatPlans"],
+    }),
+
+    getSeatPlan: builder.query({
+      query: (id) => ({ url: ENDPOINTS.seatPlanGet(id), method: "GET" }),
+      providesTags: ["SeatPlans"],
+    }),
   }),
 });
 
@@ -140,4 +150,6 @@ export const {
   useResolveSosMutation,
   usePostSeatStudentBatchMutation,
   useGetSeatStudentBatchQuery,
+  usePostSeatPlanMutation,
+  useGetSeatPlanQuery,
 } = apiSlice;

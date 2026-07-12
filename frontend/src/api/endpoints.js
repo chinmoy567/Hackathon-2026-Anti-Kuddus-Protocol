@@ -15,4 +15,6 @@ export const ENDPOINTS = {
   sosResolve: (id) => `/sos/${id}/resolve`,
   seatStudentBatch: "/seat-students/batch",
   seatStudentGet: (batchId) => `/seat-students/${batchId}`,
+  seatPlans: "/seat-plans",
+  seatPlanGet: (id) => `/seat-plans/${id}`,
 };

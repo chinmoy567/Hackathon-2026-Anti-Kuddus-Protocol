@@ -4,5 +4,8 @@ node_modules/
 # Environment variables
 .env
 
+# Test infra scratch files
+backend/test/.mongo-uri
+
 # Claude Code
 .claude/

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
 import { useSocket } from "../hooks/useSocket.js";
+import { useSosOfflineSync } from "../hooks/useSosOfflineSync.js";
 import { SocketProvider } from "../context/SocketContext.jsx";
 import { SosButton } from "../components/sos/SosButton.jsx";
 
@@ -12,6 +13,7 @@ const SOS_DASHBOARD_ROLES = ["captain_2nd", "captain_3rd", "teacher"];
 // (Frontend.md FE-3, esp. captain_1st / Kuddus).
 const AppShell = () => {
   useSocket();
+  useSosOfflineSync();
   const { user, role, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);

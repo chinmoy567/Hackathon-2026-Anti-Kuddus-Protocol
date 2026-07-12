@@ -4,6 +4,7 @@ import { SOS_LOCATIONS } from "../../utils/constants.js";
 import { Button } from "../ui/Button.jsx";
 import { Select } from "../ui/Select.jsx";
 import { useToast } from "../ui/Toast.jsx";
+import { enqueue } from "../../utils/sosOfflineQueue.js";
 
 // Mission 5 baseline: a prominent, mobile-friendly SOS trigger + location
 // picker (Hackathon Question.md Mission 5). Fixed to the corner so it is
@@ -16,17 +17,30 @@ export const SosButton = () => {
 
   const handleSend = async () => {
     if (!location) return;
+    const alert = {
+      location,
+      occurredAt: new Date().toISOString(),
+      clientEventId: crypto.randomUUID(),
+    };
+
     try {
-      await sendSos({
-        location,
-        occurredAt: new Date().toISOString(),
-        clientEventId: crypto.randomUUID(),
-      }).unwrap();
+      await sendSos(alert).unwrap();
       push("SOS sent. Captains have been alerted.", "success");
       setOpen(false);
       setLocation("");
     } catch (err) {
-      push(err?.message || "Could not send SOS. Please try again.", "error");
+      // No `status` means the request never reached the server (offline/DNS/
+      // connection failure) — a real 400/409/403 always carries one. Only
+      // the former is safe to silently queue; a genuine rejection must
+      // still surface as an error so the student isn't misled.
+      if (err?.status === undefined) {
+        enqueue(alert);
+        push("You're offline. Saved — will send automatically once you're back online.", "error");
+        setOpen(false);
+        setLocation("");
+      } else {
+        push(err?.message || "Could not send SOS. Please try again.", "error");
+      }
     }
   };
 

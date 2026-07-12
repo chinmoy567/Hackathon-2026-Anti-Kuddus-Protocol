@@ -28,6 +28,6 @@ export const createEntry = async ({ type, foodItemId, quantity }, anonymousToken
   anonymousTokenCtx.doc.usedAtBucket = coarsenToDate();
   await anonymousTokenCtx.doc.save();
 
-  const { cashTotal, foodTotal } = await getSummary({});
-  emitLedgerUpdated({ cashTotal, foodTotal });
+  const { cashTotal, foodTotal, caloricSurplus, conversions } = await getSummary({});
+  emitLedgerUpdated({ cashTotal, foodTotal, caloricSurplus, conversions });
 };

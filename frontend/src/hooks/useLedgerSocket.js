@@ -6,12 +6,13 @@ import { useSocketContext } from "../context/SocketContext.jsx";
 const POLL_INTERVAL_MS = 15000;
 
 // Subscribes to `ledger:updated` and patches the getLedgerSummary("day") cache
-// entry's running totals directly — mirrors useSocket.js's shape exactly.
-// Falls back to polling GET /ledger/summary while disconnected (same
-// resilience pattern as the strike bar, per task2-ledger-analytics.md §2).
+// entry's running totals + derived metrics (caloricSurplus, conversions)
+// directly — mirrors useSocket.js's shape exactly. Falls back to polling
+// GET /ledger/summary while disconnected (same resilience pattern as the
+// strike bar, per task2-ledger-analytics.md §2).
 // The per-bucket `series` array is left to the next full re-fetch (poll or
 // tag invalidation) rather than patched incrementally — the payload only
-// carries the two running totals, not a bucket to append to.
+// carries running totals and derived metrics, not a bucket to append to.
 export const useLedgerSocket = () => {
   const dispatch = useDispatch();
   const socket = useSocketContext();
@@ -38,6 +39,8 @@ export const useLedgerSocket = () => {
         apiSlice.util.updateQueryData("getLedgerSummary", "day", (draft) => {
           draft.cashTotal = payload.cashTotal;
           draft.foodTotal = payload.foodTotal;
+          draft.caloricSurplus = payload.caloricSurplus;
+          draft.conversions = payload.conversions;
         })
       );
     };

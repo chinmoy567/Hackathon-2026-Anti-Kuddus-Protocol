@@ -26,7 +26,7 @@ const axiosBaseQuery =
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["Complaints", "StrikeState", "SosAlerts"],
+  tagTypes: ["Complaints", "StrikeState", "SosAlerts", "SeatStudents"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: ({ rollNumber, pin }) => ({ url: ENDPOINTS.login, method: "POST", data: { rollNumber, pin } }),
@@ -105,6 +105,20 @@ export const apiSlice = createApi({
       query: (id) => ({ url: ENDPOINTS.sosResolve(id), method: "PATCH" }),
       invalidatesTags: ["SosAlerts"],
     }),
+
+    postSeatStudentBatch: builder.mutation({
+      query: ({ batchId, students }) => ({
+        url: ENDPOINTS.seatStudentBatch,
+        method: "POST",
+        data: { batchId, students },
+      }),
+      invalidatesTags: ["SeatStudents"],
+    }),
+
+    getSeatStudentBatch: builder.query({
+      query: (batchId) => ({ url: ENDPOINTS.seatStudentGet(batchId), method: "GET" }),
+      providesTags: ["SeatStudents"],
+    }),
   }),
 });
 
@@ -124,4 +138,6 @@ export const {
   useGetActiveSosQuery,
   useAcknowledgeSosMutation,
   useResolveSosMutation,
+  usePostSeatStudentBatchMutation,
+  useGetSeatStudentBatchQuery,
 } = apiSlice;

@@ -5,6 +5,7 @@ import complaintRoutes from "./complaint.routes.js";
 import evidenceRoutes from "./evidence.routes.js";
 import dashboardRoutes from "./dashboard.routes.js";
 import sosRoutes from "./sos.routes.js";
+import seatStudentRoutes from "./seatStudent.routes.js";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use("/complaints", complaintRoutes);
 router.use("/evidence", evidenceRoutes);
 router.use("/dashboard", dashboardRoutes);
 router.use("/sos", sosRoutes);
+router.use("/seat-students", seatStudentRoutes);
 
 export default router;

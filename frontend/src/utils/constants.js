@@ -48,3 +48,6 @@ responsible for EVERYTHING below, no exceptions:
 
 No excuses. Kuddus says if you don't memorize the barcode he will personally confiscate your tiffin.`;
 
+// Mirrors API.md §12 — cost-control cap on a fact-check search query.
+export const FACT_CHECK_QUERY_MAX_LENGTH = 300;
+

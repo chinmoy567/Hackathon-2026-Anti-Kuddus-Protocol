@@ -23,4 +23,6 @@ export const ENDPOINTS = {
   syllabusSummarize: "/syllabus/summarize",
   syllabusFilter: "/syllabus/filter",
   syllabusStudyPlan: "/syllabus/study-plan",
+  factCheckSearch: "/fact-check/search",
+  factCheckVerify: "/fact-check/verify",
 };

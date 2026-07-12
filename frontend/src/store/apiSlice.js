@@ -180,6 +180,14 @@ export const apiSlice = createApi({
         data: { topics, testDate, hoursPerDay, weakSubjects },
       }),
     }),
+
+    searchRules: builder.mutation({
+      query: (q) => ({ url: ENDPOINTS.factCheckSearch, method: "GET", params: { q } }),
+    }),
+
+    verifyClaim: builder.mutation({
+      query: (claim) => ({ url: ENDPOINTS.factCheckVerify, method: "POST", data: { claim } }),
+    }),
   }),
 });
 
@@ -209,4 +217,6 @@ export const {
   useSummarizeSyllabusMutation,
   useFilterSyllabusMutation,
   useGenerateStudyPlanMutation,
+  useSearchRulesMutation,
+  useVerifyClaimMutation,
 } = apiSlice;

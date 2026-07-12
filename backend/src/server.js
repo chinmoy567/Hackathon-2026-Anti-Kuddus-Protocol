@@ -1,23 +1,23 @@
-import dotenv from "dotenv";
-import mongoose from "mongoose";
+import http from "http";
 import app from "./app.js";
-
-dotenv.config();
-
-const PORT = process.env.PORT || 5000;
+import { env } from "./config/env.js";
+import { connectDatabases } from "./config/db.js";
+import { initSocket } from "./config/socket.js";
+import { scheduleReconciliation } from "./utils/reconcileStrikeCount.js";
 
 const startServer = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await connectDatabases();
 
-    console.log("MongoDB Connected");
+    const httpServer = http.createServer(app);
+    initSocket(httpServer);
+    scheduleReconciliation();
 
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+    httpServer.listen(env.port, () => {
+      console.log(`Server running on http://localhost:${env.port}`);
     });
   } catch (error) {
-    console.error("Database Connection Failed");
-    console.error(error.message);
+    console.error("Failed to start server:", error.message);
     process.exit(1);
   }
 };

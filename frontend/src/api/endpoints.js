@@ -20,4 +20,7 @@ export const ENDPOINTS = {
   ledgerEntries: "/ledger/entries",
   ledgerSummary: "/ledger/summary",
   foodCatalog: "/food-catalog",
+  syllabusSummarize: "/syllabus/summarize",
+  syllabusFilter: "/syllabus/filter",
+  syllabusStudyPlan: "/syllabus/study-plan",
 };

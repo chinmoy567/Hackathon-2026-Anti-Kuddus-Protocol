@@ -43,3 +43,15 @@ export class TooManyRequestsError extends AppError {
     super(message, 429, "RATE_LIMITED");
   }
 }
+
+export class AiProviderError extends AppError {
+  constructor(message = "The AI service is temporarily unavailable.") {
+    super(message, 502, "AI_PROVIDER_ERROR");
+  }
+}
+
+export class TestDateMustBeFutureError extends AppError {
+  constructor(message = "testDate must be a future date.") {
+    super(message, 400, "TEST_DATE_MUST_BE_FUTURE");
+  }
+}

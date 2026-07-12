@@ -33,3 +33,20 @@ export const sosLimiter = rateLimit({
       errors: [{ code: "RATE_LIMITED", message: "SOS rate limit exceeded." }],
     }),
 });
+
+// Per-user half of the "per-user + global AI cost cap" (API.md §12). The global half is an
+// accepted in-memory-per-process scope decision for this hackathon deployment — see
+// task1-implementation-plan.md §2/§7.
+export const syllabusLimiter = rateLimit({
+  windowMs: env.syllabusRateLimit.windowMs,
+  limit: env.syllabusRateLimit.max,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => req.user?.id || ipKeyGenerator(req.ip),
+  handler: (req, res) =>
+    error(res, {
+      statusCode: 429,
+      message: "Too many AI requests. Please try again later.",
+      errors: [{ code: "RATE_LIMITED", message: "Syllabus AI rate limit exceeded." }],
+    }),
+});

@@ -48,4 +48,8 @@ export const env = {
     max: Number(process.env.TOKEN_ISSUANCE_RATE_LIMIT_MAX) || 5,
     windowMs: Number(process.env.TOKEN_ISSUANCE_RATE_LIMIT_WINDOW_MS) || 10 * 60 * 1000,
   },
+  sosRateLimit: {
+    max: Number(process.env.SOS_RATE_LIMIT_MAX) || 10,
+    windowMs: Number(process.env.SOS_RATE_LIMIT_WINDOW_MS) || 60 * 1000,
+  },
 };

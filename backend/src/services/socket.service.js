@@ -9,3 +9,29 @@ export const emitStrikeUpdated = (payload) => {
     // succeeded and remains the source of truth; clients re-fetch on reconnect.
   }
 };
+
+// Mission 5 (API.md §13) — sos:new fans out to captain_2nd/captain_3rd only,
+// never captain_1st (Kuddus is deliberately routed around).
+export const emitSosNew = (payload) => {
+  try {
+    getIO().to("role:captain_2nd").to("role:captain_3rd").emit("sos:new", payload);
+  } catch {
+    // Socket.IO not initialized — REST write already succeeded.
+  }
+};
+
+export const emitSosAcknowledged = (payload) => {
+  try {
+    getIO().to("role:captain_2nd").to("role:captain_3rd").to("role:teacher").emit("sos:acknowledged", payload);
+  } catch {
+    // Socket.IO not initialized — REST write already succeeded.
+  }
+};
+
+export const emitSosResolved = (payload) => {
+  try {
+    getIO().to("role:captain_2nd").to("role:captain_3rd").to("role:teacher").emit("sos:resolved", payload);
+  } catch {
+    // Socket.IO not initialized — REST write already succeeded.
+  }
+};

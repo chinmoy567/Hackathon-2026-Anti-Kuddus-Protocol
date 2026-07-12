@@ -2,6 +2,9 @@ import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
 import { useSocket } from "../hooks/useSocket.js";
 import { SocketProvider } from "../context/SocketContext.jsx";
+import { SosButton } from "../components/sos/SosButton.jsx";
+
+const SOS_DASHBOARD_ROLES = ["captain_2nd", "captain_3rd", "teacher"];
 
 // No nav link is ever rendered for a role that can't use the destination —
 // belt-and-suspenders UI hygiene; the real boundary is server-side
@@ -35,6 +38,11 @@ const AppShell = () => {
                 New Complaint
               </Link>
             )}
+            {SOS_DASHBOARD_ROLES.includes(role) && (
+              <Link to="/sos" className="text-slate-600 transition-colors duration-150 hover:text-slate-900">
+                SOS Alerts
+              </Link>
+            )}
             <span className="hidden text-slate-400 sm:inline">{user?.name}</span>
             <button
               type="button"
@@ -50,6 +58,7 @@ const AppShell = () => {
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
         <Outlet />
       </main>
+      {role === "student" && <SosButton />}
     </div>
   );
 };

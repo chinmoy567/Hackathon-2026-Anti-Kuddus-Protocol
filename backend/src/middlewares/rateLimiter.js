@@ -17,3 +17,19 @@ export const loginLimiter = rateLimit({
       errors: [{ code: "RATE_LIMITED", message: "Login rate limit exceeded." }],
     }),
 });
+
+// Generous per-student limit (API.md §11) — high enough to never block a
+// genuine emergency retry storm, low enough to blunt flooding abuse.
+export const sosLimiter = rateLimit({
+  windowMs: env.sosRateLimit.windowMs,
+  limit: env.sosRateLimit.max,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => req.user?.id || ipKeyGenerator(req.ip),
+  handler: (req, res) =>
+    error(res, {
+      statusCode: 429,
+      message: "Too many SOS requests. Please try again shortly.",
+      errors: [{ code: "RATE_LIMITED", message: "SOS rate limit exceeded." }],
+    }),
+});

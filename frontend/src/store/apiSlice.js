@@ -26,7 +26,7 @@ const axiosBaseQuery =
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["Complaints", "StrikeState"],
+  tagTypes: ["Complaints", "StrikeState", "SosAlerts"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: ({ rollNumber, pin }) => ({ url: ENDPOINTS.login, method: "POST", data: { rollNumber, pin } }),
@@ -82,6 +82,29 @@ export const apiSlice = createApi({
       query: () => ({ url: ENDPOINTS.strikeState, method: "GET" }),
       providesTags: ["StrikeState"],
     }),
+
+    sendSos: builder.mutation({
+      query: ({ location, occurredAt, clientEventId }) => ({
+        url: ENDPOINTS.sos,
+        method: "POST",
+        data: { location, occurredAt, clientEventId },
+      }),
+    }),
+
+    getActiveSos: builder.query({
+      query: () => ({ url: ENDPOINTS.sosActive, method: "GET" }),
+      providesTags: ["SosAlerts"],
+    }),
+
+    acknowledgeSos: builder.mutation({
+      query: (id) => ({ url: ENDPOINTS.sosAcknowledge(id), method: "PATCH" }),
+      invalidatesTags: ["SosAlerts"],
+    }),
+
+    resolveSos: builder.mutation({
+      query: (id) => ({ url: ENDPOINTS.sosResolve(id), method: "PATCH" }),
+      invalidatesTags: ["SosAlerts"],
+    }),
   }),
 });
 
@@ -97,4 +120,8 @@ export const {
   useGetComplaintsQuery,
   useUpdateComplaintStatusMutation,
   useGetStrikeStateQuery,
+  useSendSosMutation,
+  useGetActiveSosQuery,
+  useAcknowledgeSosMutation,
+  useResolveSosMutation,
 } = apiSlice;

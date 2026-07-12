@@ -18,3 +18,7 @@ export const COMPLAINT_STATUS_LABELS = {
   validated: "Validated",
   rejected: "Rejected",
 };
+
+// Mirrors API.md §11 exactly — the five hardcoded SOS locations, nothing else.
+export const SOS_LOCATIONS = ["Library", "Playground", "Corridor", "Classroom", "Canteen"];
+

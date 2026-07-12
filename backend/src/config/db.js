@@ -1,5 +1,11 @@
+import dns from "node:dns";
 import mongoose from "mongoose";
 import { env } from "./env.js";
+
+// Windows can hand Node a link-local IPv6 DNS server that c-ares can't query,
+// breaking mongodb+srv:// lookups even though the OS resolver works fine.
+// Force a public resolver so SRV lookups succeed regardless of the OS DNS config.
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 // Three independent Mongoose connections — one per store (Identity / Anonymous /
 // Domain). Deliberately NOT a single shared connection: `ISSUES.md` Issue 1 requires

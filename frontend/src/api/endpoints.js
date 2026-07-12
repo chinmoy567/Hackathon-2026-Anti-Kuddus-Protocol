@@ -9,4 +9,8 @@ export const ENDPOINTS = {
   complaints: "/complaints",
   complaintStatus: (id) => `/complaints/${id}/status`,
   strikeState: "/dashboard/strike-state",
+  sos: "/sos",
+  sosActive: "/sos/active",
+  sosAcknowledge: (id) => `/sos/${id}/acknowledge`,
+  sosResolve: (id) => `/sos/${id}/resolve`,
 };

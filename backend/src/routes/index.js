@@ -11,6 +11,7 @@ import ledgerEntryRoutes from "./ledgerEntry.routes.js";
 import ledgerAnalyticsRoutes from "./ledgerAnalytics.routes.js";
 import foodCatalogRoutes from "./foodCatalog.routes.js";
 import syllabusRoutes from "./syllabus.routes.js";
+import factCheckRoutes from "./factCheck.routes.js";
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use("/ledger", ledgerEntryRoutes);
 router.use("/ledger", ledgerAnalyticsRoutes);
 router.use("/food-catalog", foodCatalogRoutes);
 router.use("/syllabus", syllabusRoutes);
+router.use("/fact-check", factCheckRoutes);
 
 export default router;

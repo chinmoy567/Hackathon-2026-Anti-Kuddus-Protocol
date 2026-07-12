@@ -1,0 +1,56 @@
+// The mission's signature UI surface (task2 spec §5) — bold verdict badge, confidence meter,
+// exact quote set apart as a blockquote. UNVERIFIABLE reads as distinctly neutral, not a washed
+// -out FALSE, since it means "no matching rule found," not "the claim is false."
+const VERDICT_STYLES = {
+  TRUE: {
+    badge: "bg-emerald-600 text-white",
+    card: "border-emerald-200 bg-emerald-50",
+    meter: "bg-emerald-600",
+    label: "TRUE",
+  },
+  FALSE: {
+    badge: "bg-rose-600 text-white",
+    card: "border-rose-200 bg-rose-50",
+    meter: "bg-rose-600",
+    label: "FALSE",
+  },
+  UNVERIFIABLE: {
+    badge: "bg-slate-500 text-white",
+    card: "border-slate-300 bg-slate-100",
+    meter: "bg-slate-500",
+    label: "UNVERIFIABLE",
+  },
+};
+
+export const ValidationCard = ({ verdict, confidence, quote, ruleTitle }) => {
+  const style = VERDICT_STYLES[verdict] ?? VERDICT_STYLES.UNVERIFIABLE;
+  const confidencePercent = Math.round((confidence ?? 0) * 100);
+
+  return (
+    <div className={`rounded-2xl border px-5 py-4 ${style.card}`}>
+      <div className="mb-3 flex items-center justify-between">
+        <span className={`rounded-full px-3 py-1 text-sm font-bold tracking-wide ${style.badge}`}>
+          [{style.label}]
+        </span>
+        <span className="text-xs font-medium text-slate-600">{confidencePercent}% confidence</span>
+      </div>
+
+      <div className="mb-3 h-1.5 w-full overflow-hidden rounded-full bg-white/60">
+        <div className={`h-full rounded-full ${style.meter}`} style={{ width: `${confidencePercent}%` }} />
+      </div>
+
+      {verdict === "UNVERIFIABLE" ? (
+        <p className="text-sm text-slate-600">
+          No matching rule was found in the official rulebook for this claim.
+        </p>
+      ) : (
+        <>
+          <blockquote className="mb-2 border-l-2 border-slate-400 pl-3 text-sm italic text-slate-800">
+            &ldquo;{quote}&rdquo;
+          </blockquote>
+          {ruleTitle && <p className="text-xs text-slate-600">Source: {ruleTitle}</p>}
+        </>
+      )}
+    </div>
+  );
+};

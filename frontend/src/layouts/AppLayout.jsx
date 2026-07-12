@@ -34,6 +34,9 @@ const AppShell = () => {
       <Link to="/syllabus" className="text-slate-600 transition-colors duration-150 hover:text-slate-900">
         Syllabus Negotiator
       </Link>
+      <Link to="/fact-check" className="text-slate-600 transition-colors duration-150 hover:text-slate-900">
+        Fact-Checker
+      </Link>
       {role === "student" && (
         <Link to="/complaints/new" className="text-slate-600 transition-colors duration-150 hover:text-slate-900">
           New Complaint

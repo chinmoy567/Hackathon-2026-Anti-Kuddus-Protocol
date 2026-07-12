@@ -10,7 +10,10 @@
     "start": "node src/server.js",
     "seed": "node src/seed/seedRoster.js",
     "seed:ledger": "node src/seed/seedLedgerReference.js",
-    "seed:curriculum": "node src/seed/seedCurriculum.js"
+    "seed:curriculum": "node src/seed/seedCurriculum.js",
+    "seed:rulebook": "node src/seed/seedRuleBook.js",
+    "ingest:rulebook": "node src/seed/ingestRuleBookChunks.js",
+    "test:curated": "node src/scripts/runCuratedFactCheckSuite.js"
   },
   "keywords": [],
   "author": "",

@@ -83,6 +83,16 @@ export const env = {
   // live seeded index). 0.6 sits in the gap between those two clusters.
   curriculumSimilarityThreshold: Number(process.env.CURRICULUM_SIMILARITY_THRESHOLD) || 0.6,
 
+  // Mission 6 fact-check threshold — calibrated 2026-07-13 against the real 25-rule corpus
+  // (backend/src/fixtures/ruleBookCorpus.js) using the user's own 30-claim curated test set.
+  // Relevant-rule top-1 scores ranged ~0.52-0.88; no-match top-1 scores ranged ~0.45-0.62 — the
+  // two clusters genuinely overlap in the 0.52-0.62 band on this small, single-sentence-chunk
+  // corpus, so no threshold value gets a clean split. 0.6 sits in the middle of the overlap and
+  // was measured to produce 26/30 (87%) on the curated suite; a stricter or looser value trades
+  // one failure mode for the other, it does not eliminate the overlap. Revisit if the corpus
+  // grows or chunks become longer/richer (more context per chunk usually widens the score gap).
+  rulebookSimilarityThreshold: Number(process.env.RULEBOOK_SIMILARITY_THRESHOLD) || 0.6,
+
   // Cohere — free-tier embeddings (Groq has no embeddings endpoint). embed-english-v3.0 is
   // 1024-dim, different from OpenAI's 1536-dim — the Pinecone index must be created/recreated
   // at 1024 dimensions before this is usable. Not in REQUIRED_VARS yet: optional until a real

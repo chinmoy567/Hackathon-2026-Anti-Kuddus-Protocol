@@ -18,5 +18,6 @@ export const ENDPOINTS = {
   seatPlans: "/seat-plans",
   seatPlanGet: (id) => `/seat-plans/${id}`,
   ledgerEntries: "/ledger/entries",
+  ledgerSummary: "/ledger/summary",
   foodCatalog: "/food-catalog",
 };

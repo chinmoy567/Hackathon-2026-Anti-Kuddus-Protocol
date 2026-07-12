@@ -8,6 +8,7 @@ import sosRoutes from "./sos.routes.js";
 import seatStudentRoutes from "./seatStudent.routes.js";
 import seatPlanRoutes from "./seatPlan.routes.js";
 import ledgerEntryRoutes from "./ledgerEntry.routes.js";
+import ledgerAnalyticsRoutes from "./ledgerAnalytics.routes.js";
 import foodCatalogRoutes from "./foodCatalog.routes.js";
 
 const router = Router();
@@ -21,6 +22,7 @@ router.use("/sos", sosRoutes);
 router.use("/seat-students", seatStudentRoutes);
 router.use("/seat-plans", seatPlanRoutes);
 router.use("/ledger", ledgerEntryRoutes);
+router.use("/ledger", ledgerAnalyticsRoutes);
 router.use("/food-catalog", foodCatalogRoutes);
 
 export default router;

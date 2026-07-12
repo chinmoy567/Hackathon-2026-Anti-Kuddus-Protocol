@@ -2,10 +2,23 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Card } from "../../components/ui/Card.jsx";
 import { TextInput } from "../../components/ui/TextInput.jsx";
+import { Select } from "../../components/ui/Select.jsx";
 import { Button } from "../../components/ui/Button.jsx";
 import { useToast } from "../../components/ui/Toast.jsx";
 import { SeatGrid } from "../../components/SeatGrid/SeatGrid.jsx";
 import { usePostSeatPlanMutation, useGetSeatStudentBatchQuery } from "../../store/apiSlice.js";
+
+const ALGORITHM_OPTIONS = [
+  { value: "height_sort", label: "Height Sort" },
+  { value: "line_of_sight_optimized", label: "Line-of-Sight Optimized" },
+];
+
+const parseAisleColumns = (raw) =>
+  raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0)
+    .map(Number);
 
 // Teacher-only baseline grid planner — generates an ascending-height seat
 // plan for a batch (task2-baseline-grid-sorting.md §5).
@@ -31,6 +44,8 @@ export const GridPlannerPage = () => {
       gridCols: 6,
       teacherRow: 0,
       teacherCol: 0,
+      algorithm: "height_sort",
+      aisleColumns: "",
     },
   });
 
@@ -50,12 +65,15 @@ export const GridPlannerPage = () => {
   const submitHandler = handleSubmit(async (form) => {
     if (clientErrors.length > 0) return;
 
+    const aisleColumns = parseAisleColumns(form.aisleColumns);
+
     const payload = {
       batchId: form.batchId,
       gridRows: Number(form.gridRows),
       gridCols: Number(form.gridCols),
       teacherPosition: { row: Number(form.teacherRow), col: Number(form.teacherCol) },
-      algorithm: "height_sort",
+      algorithm: form.algorithm,
+      ...(aisleColumns.length > 0 ? { aisleColumns } : {}),
     };
 
     try {
@@ -115,6 +133,20 @@ export const GridPlannerPage = () => {
           error={errors.teacherCol?.message}
           {...register("teacherCol", { required: "Required.", min: { value: 0, message: "Must be >= 0." } })}
         />
+        <Select
+          id="algorithm"
+          label="Algorithm"
+          options={ALGORITHM_OPTIONS}
+          className="col-span-2"
+          {...register("algorithm")}
+        />
+        <TextInput
+          id="aisleColumns"
+          label="Aisle columns (comma-separated)"
+          placeholder="e.g. 2, 5"
+          className="col-span-2"
+          {...register("aisleColumns")}
+        />
 
         {clientErrors.length > 0 && (
           <ul role="alert" className="col-span-2 space-y-1 text-sm text-rose-600 sm:col-span-4">
@@ -130,9 +162,16 @@ export const GridPlannerPage = () => {
           disabled={clientErrors.length > 0}
           className="col-span-2 sm:col-span-4"
         >
-          {isGenerating ? "Generating…" : "Generate (Height Sort)"}
+          {isGenerating ? "Generating…" : "Generate Seat Plan"}
         </Button>
       </form>
+
+      {plan && plan.feasible === false && (
+        <div role="alert" className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
+          <p className="font-medium">Plan could not fully satisfy all constraints.</p>
+          <p className="mt-1">{plan.infeasibilityReason}</p>
+        </div>
+      )}
 
       {plan && (
         <SeatGrid
@@ -140,6 +179,7 @@ export const GridPlannerPage = () => {
           gridCols={plan.gridCols}
           teacherPosition={plan.teacherPosition}
           assignments={plan.assignments}
+          aisleColumns={plan.aisleColumns}
           studentLookup={studentLookup}
         />
       )}

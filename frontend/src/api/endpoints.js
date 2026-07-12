@@ -13,4 +13,6 @@ export const ENDPOINTS = {
   sosActive: "/sos/active",
   sosAcknowledge: (id) => `/sos/${id}/acknowledge`,
   sosResolve: (id) => `/sos/${id}/resolve`,
+  seatStudentBatch: "/seat-students/batch",
+  seatStudentGet: (batchId) => `/seat-students/${batchId}`,
 };

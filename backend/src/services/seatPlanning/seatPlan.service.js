@@ -2,10 +2,13 @@ import { SeatPlan } from "../../models/domain/seatPlan.model.js";
 import { SeatStudent } from "../../models/domain/seatStudent.model.js";
 import { ValidationError, NotFoundError } from "../../utils/errors.js";
 import { heightSortAlgorithm } from "./heightSort.algorithm.js";
+import { lineOfSightAlgorithm } from "./lineOfSight.algorithm.js";
 
-// Dispatch table — Task 3 adds "line_of_sight_optimized" here without touching this branch.
+// Dispatch table — each algorithm receives the same full argument set;
+// heightSortAlgorithm ignores the extra teacherPosition/aisleColumns args.
 const ALGORITHMS = {
   height_sort: heightSortAlgorithm,
+  line_of_sight_optimized: lineOfSightAlgorithm,
 };
 
 // Generates and persists one seat plan for a batch (API.md §8).
@@ -19,7 +22,10 @@ export const generatePlan = async ({ batchId, gridRows, gridCols, teacherPositio
 
   const students = await SeatStudent.find({ batchId });
   const runAlgorithm = ALGORITHMS[algorithm];
-  const assignments = runAlgorithm(students, gridRows, gridCols);
+  const result = runAlgorithm(students, gridRows, gridCols, teacherPosition, aisleColumns);
+  const { assignments, feasible, infeasibilityReason } = Array.isArray(result)
+    ? { assignments: result, feasible: true, infeasibilityReason: null }
+    : result;
 
   const plan = await SeatPlan.create({
     batchId,
@@ -28,8 +34,8 @@ export const generatePlan = async ({ batchId, gridRows, gridCols, teacherPositio
     teacherPosition,
     aisleColumns,
     algorithm,
-    feasible: true,
-    infeasibilityReason: null,
+    feasible,
+    infeasibilityReason,
     assignments,
     generatedAt: new Date(),
   });

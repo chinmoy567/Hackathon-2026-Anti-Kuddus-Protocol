@@ -11,7 +11,9 @@ export const createSeatPlanValidation = [
   body("teacherPosition.col").isInt({ min: 0 }).withMessage("teacherPosition.col must be a non-negative integer."),
   body("aisleColumns").optional().isArray().withMessage("aisleColumns must be an array."),
   body("aisleColumns.*").optional().isInt({ min: 0 }).withMessage("aisleColumns[] must be non-negative integers."),
-  body("algorithm").isIn(["height_sort"]).withMessage('algorithm must be "height_sort".'),
+  body("algorithm")
+    .isIn(["height_sort", "line_of_sight_optimized"])
+    .withMessage('algorithm must be "height_sort" or "line_of_sight_optimized".'),
   runValidation,
 ];
 

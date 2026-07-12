@@ -53,6 +53,7 @@ export const listComplaints = async ({ status, category, page = 1, limit = 20 })
   const [items, total] = await Promise.all([
     Complaint.find(filter)
       .select("-tokenHash")
+      .populate("evidenceFileIds", "cloudinaryUrl mimeType sizeBytes")
       .sort({ submittedAtBucket: -1 })
       .skip(skip)
       .limit(limit),

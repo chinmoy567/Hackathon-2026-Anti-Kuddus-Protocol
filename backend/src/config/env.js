@@ -10,6 +10,9 @@ const REQUIRED_VARS = [
   "MONGO_DB_DOMAIN",
   "JWT_ACCESS_SECRET",
   "JWT_REFRESH_SECRET",
+  "GORQ_API_KEY",
+  "PINECONE_API_KEY",
+  "PINECONE_INDEX_NAME",
 ];
 
 const missing = REQUIRED_VARS.filter((key) => !process.env[key]);
@@ -51,5 +54,48 @@ export const env = {
   sosRateLimit: {
     max: Number(process.env.SOS_RATE_LIMIT_MAX) || 10,
     windowMs: Number(process.env.SOS_RATE_LIMIT_WINDOW_MS) || 60 * 1000,
+  },
+
+  // Groq — OpenAI-compatible chat completions, free tier, no billing required. Replaces
+  // OpenAI as the AI Gateway's chat provider (embeddings still need a working provider —
+  // see openaiApiKey below, kept for that path until an alternative is wired).
+  gorqApiKey: process.env.GORQ_API_KEY,
+  gorqChatModel: process.env.GORQ_CHAT_MODEL || "llama-3.3-70b-versatile",
+  // Structured-output (json_schema) calls need a model that supports it — llama-3.3 does
+  // not (confirmed via direct test); openai/gpt-oss-120b does. Used only by
+  // studyPlan.service.js#generatePlan()'s ChatOpenAI.withStructuredOutput() call.
+  gorqStructuredOutputModel: process.env.GORQ_STRUCTURED_OUTPUT_MODEL || "openai/gpt-oss-120b",
+
+  openaiApiKey: process.env.OPENAI_API_KEY,
+  openaiChatModel: process.env.OPENAI_CHAT_MODEL || "gpt-4o-mini",
+
+  syllabusRateLimit: {
+    max: Number(process.env.SYLLABUS_RATE_LIMIT_MAX) || 10,
+    windowMs: Number(process.env.SYLLABUS_RATE_LIMIT_WINDOW_MS) || 10 * 60 * 1000,
+  },
+
+  pineconeApiKey: process.env.PINECONE_API_KEY,
+  pineconeIndexName: process.env.PINECONE_INDEX_NAME,
+  openaiEmbeddingModel: process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small",
+  // Recalibrated for Cohere embed-english-v3.0 (was 0.75, tuned for OpenAI text-embedding-3-small
+  // — Cohere's cosine scores run lower for the same semantic match: real curriculum topics
+  // scored ~0.67-0.71, genuinely non-examinable items ~0.43-0.50, sampled directly against the
+  // live seeded index). 0.6 sits in the gap between those two clusters.
+  curriculumSimilarityThreshold: Number(process.env.CURRICULUM_SIMILARITY_THRESHOLD) || 0.6,
+
+  // Cohere — free-tier embeddings (Groq has no embeddings endpoint). embed-english-v3.0 is
+  // 1024-dim, different from OpenAI's 1536-dim — the Pinecone index must be created/recreated
+  // at 1024 dimensions before this is usable. Not in REQUIRED_VARS yet: optional until a real
+  // key is provided, so the app still boots without it (Task 1/3 chat features work either way).
+  cohereApiKey: process.env.COHERE_API_KEY,
+  cohereEmbeddingModel: process.env.COHERE_EMBEDDING_MODEL || "embed-english-v3.0",
+
+  studyPlan: {
+    defaultHoursPerDay: Number(process.env.STUDY_PLAN_DEFAULT_HOURS_PER_DAY) || 2,
+    minHoursPerDay: 1,
+    maxHoursPerDay: 16,
+    weakSubjectMultiplier: Number(process.env.STUDY_PLAN_WEAK_SUBJECT_MULTIPLIER) || 1.5,
+    examFrequencyNudgeMultiplier: Number(process.env.STUDY_PLAN_EXAM_FREQUENCY_NUDGE_MULTIPLIER) || 1.15,
+    minBlockMinutes: Number(process.env.STUDY_PLAN_MIN_BLOCK_MINUTES) || 10,
   },
 };

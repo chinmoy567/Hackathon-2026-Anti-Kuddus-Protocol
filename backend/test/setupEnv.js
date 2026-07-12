@@ -16,3 +16,9 @@ process.env.MONGO_DB_DOMAIN = "antikuddus_domain_test";
 process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "test-access-secret";
 process.env.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "test-refresh-secret";
 process.env.CORS_ORIGIN = "http://localhost:5173";
+// Mission 3 — env.js requires these at boot; tests never call the real Groq/Cohere/Pinecone
+// SDKs (always mocked), so placeholder values are sufficient here.
+process.env.GORQ_API_KEY = process.env.GORQ_API_KEY || "test-gorq-key";
+process.env.COHERE_API_KEY = process.env.COHERE_API_KEY || "test-cohere-key";
+process.env.PINECONE_API_KEY = process.env.PINECONE_API_KEY || "test-pinecone-key";
+process.env.PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME || "test-index";

@@ -156,6 +156,30 @@ export const apiSlice = createApi({
       query: (groupBy = "day") => ({ url: ENDPOINTS.ledgerSummary, method: "GET", params: { groupBy } }),
       providesTags: ["LedgerSummary"],
     }),
+
+    summarizeSyllabus: builder.mutation({
+      query: (syllabusText) => ({
+        url: ENDPOINTS.syllabusSummarize,
+        method: "POST",
+        data: { syllabusText },
+      }),
+    }),
+
+    filterSyllabus: builder.mutation({
+      query: (syllabusText) => ({
+        url: ENDPOINTS.syllabusFilter,
+        method: "POST",
+        data: { syllabusText },
+      }),
+    }),
+
+    generateStudyPlan: builder.mutation({
+      query: ({ topics, testDate, hoursPerDay, weakSubjects }) => ({
+        url: ENDPOINTS.syllabusStudyPlan,
+        method: "POST",
+        data: { topics, testDate, hoursPerDay, weakSubjects },
+      }),
+    }),
   }),
 });
 
@@ -182,4 +206,7 @@ export const {
   useSubmitLedgerEntryMutation,
   useGetFoodCatalogQuery,
   useGetLedgerSummaryQuery,
+  useSummarizeSyllabusMutation,
+  useFilterSyllabusMutation,
+  useGenerateStudyPlanMutation,
 } = apiSlice;

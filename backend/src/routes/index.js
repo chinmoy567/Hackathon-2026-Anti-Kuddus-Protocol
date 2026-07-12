@@ -10,6 +10,7 @@ import seatPlanRoutes from "./seatPlan.routes.js";
 import ledgerEntryRoutes from "./ledgerEntry.routes.js";
 import ledgerAnalyticsRoutes from "./ledgerAnalytics.routes.js";
 import foodCatalogRoutes from "./foodCatalog.routes.js";
+import syllabusRoutes from "./syllabus.routes.js";
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.use("/seat-plans", seatPlanRoutes);
 router.use("/ledger", ledgerEntryRoutes);
 router.use("/ledger", ledgerAnalyticsRoutes);
 router.use("/food-catalog", foodCatalogRoutes);
+router.use("/syllabus", syllabusRoutes);
 
 export default router;

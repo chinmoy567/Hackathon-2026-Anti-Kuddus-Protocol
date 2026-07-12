@@ -17,4 +17,6 @@ export const ENDPOINTS = {
   seatStudentGet: (batchId) => `/seat-students/${batchId}`,
   seatPlans: "/seat-plans",
   seatPlanGet: (id) => `/seat-plans/${id}`,
+  ledgerEntries: "/ledger/entries",
+  foodCatalog: "/food-catalog",
 };

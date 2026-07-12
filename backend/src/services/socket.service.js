@@ -35,3 +35,12 @@ export const emitSosResolved = (payload) => {
     // Socket.IO not initialized — REST write already succeeded.
   }
 };
+
+// Mission 4 (API.md §"Real-Time Events") — pushed to every dashboard.
+export const emitLedgerUpdated = (payload) => {
+  try {
+    getIO().to("all").emit("ledger:updated", payload);
+  } catch {
+    // Socket.IO not initialized — REST write already succeeded.
+  }
+};

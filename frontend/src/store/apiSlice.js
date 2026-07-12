@@ -26,7 +26,7 @@ const axiosBaseQuery =
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["Complaints", "StrikeState", "SosAlerts", "SeatStudents", "SeatPlans"],
+  tagTypes: ["Complaints", "StrikeState", "SosAlerts", "SeatStudents", "SeatPlans", "FoodCatalog"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: ({ rollNumber, pin }) => ({ url: ENDPOINTS.login, method: "POST", data: { rollNumber, pin } }),
@@ -129,6 +129,20 @@ export const apiSlice = createApi({
       query: (id) => ({ url: ENDPOINTS.seatPlanGet(id), method: "GET" }),
       providesTags: ["SeatPlans"],
     }),
+
+    submitLedgerEntry: builder.mutation({
+      query: ({ type, foodItemId, quantity, anonymousToken }) => ({
+        url: ENDPOINTS.ledgerEntries,
+        method: "POST",
+        data: { type, foodItemId, quantity },
+        headers: { "X-Anonymous-Token": anonymousToken },
+      }),
+    }),
+
+    getFoodCatalog: builder.query({
+      query: () => ({ url: ENDPOINTS.foodCatalog, method: "GET" }),
+      providesTags: ["FoodCatalog"],
+    }),
   }),
 });
 
@@ -152,4 +166,6 @@ export const {
   useGetSeatStudentBatchQuery,
   usePostSeatPlanMutation,
   useGetSeatPlanQuery,
+  useSubmitLedgerEntryMutation,
+  useGetFoodCatalogQuery,
 } = apiSlice;

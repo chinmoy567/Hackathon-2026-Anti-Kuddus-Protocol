@@ -22,3 +22,6 @@ export const COMPLAINT_STATUS_LABELS = {
 // Mirrors API.md §11 exactly — the five hardcoded SOS locations, nothing else.
 export const SOS_LOCATIONS = ["Library", "Playground", "Corridor", "Classroom", "Canteen"];
 
+// Mirrors API.md §10 — quantity bound for a single food ledger entry.
+export const LEDGER_FOOD_QUANTITY_MAX = 20;
+

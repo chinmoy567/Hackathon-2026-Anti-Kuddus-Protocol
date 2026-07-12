@@ -9,6 +9,7 @@ import { ComplaintFormPage } from "../pages/ComplaintFormPage.jsx";
 import { CaptainSosPage } from "../pages/CaptainSosPage.jsx";
 import { StudentRosterPage } from "../pages/StudentRosterPage.jsx";
 import { GridPlannerPage } from "../pages/SeatPlanner/GridPlannerPage.jsx";
+import { LedgerEntryPage } from "../pages/LedgerEntryPage.jsx";
 
 // Three routes for Mission 1 (Frontend.md §2) — no separate /complaints list
 // route; the triage/read-only list is a section of DashboardPage.
@@ -23,6 +24,7 @@ export const AppRoutes = () => (
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route element={<RoleRoute allowedRoles={["student"]} />}>
           <Route path="/complaints/new" element={<ComplaintFormPage />} />
+          <Route path="/ledger/new" element={<LedgerEntryPage />} />
         </Route>
         <Route element={<RoleRoute allowedRoles={["captain_2nd", "captain_3rd", "teacher"]} />}>
           <Route path="/sos" element={<CaptainSosPage />} />

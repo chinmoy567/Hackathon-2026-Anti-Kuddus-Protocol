@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { COMPLAINT_STATUS_LABELS } from "../../utils/constants.js";
 import { Button } from "../ui/Button.jsx";
 
@@ -10,8 +11,12 @@ const STATUS_STYLES = {
 // Captains render this read-only; only role=teacher ever sees the action
 // buttons — the server rejects a captain's PATCH regardless (API.md §5).
 export const ComplaintCard = ({ complaint, canAdjudicate, isUpdating, onValidate, onReject }) => (
-  <div className="rounded-xl border border-slate-200 bg-white p-4 transition-shadow duration-150 hover:shadow-md">
-    <div className="flex items-start justify-between gap-3">
+  <motion.div
+    whileHover={{ y: -2 }}
+    transition={{ duration: 0.2 }}
+    className="rounded-xl border border-slate-200 bg-white p-4 transition-shadow duration-150 hover:shadow-md"
+  >
+    <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
       <div className="flex-1">
         <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
           {complaint.category.replace("_", " ")}
@@ -51,5 +56,5 @@ export const ComplaintCard = ({ complaint, canAdjudicate, isUpdating, onValidate
         </Button>
       </div>
     )}
-  </div>
+  </motion.div>
 );

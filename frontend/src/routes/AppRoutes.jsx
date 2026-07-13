@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthLayout } from "../layouts/AuthLayout.jsx";
 import { AppLayout } from "../layouts/AppLayout.jsx";
@@ -14,10 +15,24 @@ import { LedgerDashboardPage } from "../pages/LedgerDashboardPage.jsx";
 import { SyllabusNegotiatorPage } from "../pages/SyllabusNegotiatorPage.jsx";
 import { FactCheckPage } from "../pages/FactCheckPage.jsx";
 
+// Landing page is public and animation-heavy — lazy-load it off the app bundle.
+const LandingPage = lazy(() =>
+  import("../pages/LandingPage.jsx").then((m) => ({ default: m.LandingPage }))
+);
+
 // Three routes for Mission 1 (Frontend.md §2) — no separate /complaints list
 // route; the triage/read-only list is a section of DashboardPage.
 export const AppRoutes = () => (
   <Routes>
+    <Route
+      path="/"
+      element={
+        <Suspense fallback={<div className="min-h-screen bg-slate-950" />}>
+          <LandingPage />
+        </Suspense>
+      }
+    />
+
     <Route element={<AuthLayout />}>
       <Route path="/login" element={<LoginPage />} />
     </Route>

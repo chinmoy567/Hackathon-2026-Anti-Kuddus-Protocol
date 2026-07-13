@@ -1,5 +1,9 @@
 import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { BookOpenCheck, ListChecks, Sparkles, CalendarRange } from "lucide-react";
 import { Card } from "../components/ui/Card.jsx";
+import { PageHeader } from "../components/ui/PageHeader.jsx";
+import { fadeUp, staggerParent, staggerItem } from "../utils/motion.js";
 import { Button } from "../components/ui/Button.jsx";
 import { TextArea } from "../components/ui/TextArea.jsx";
 import { TextInput } from "../components/ui/TextInput.jsx";
@@ -66,12 +70,14 @@ export const SyllabusNegotiatorPage = () => {
   };
 
   return (
-    <Card className="mx-auto max-w-2xl">
-      <h1 className="mb-1 text-xl font-semibold tracking-tight text-slate-900">Syllabus Negotiator</h1>
-      <p className="mb-6 text-sm text-slate-500">
-        Paste Kuddus&apos;s syllabus announcement below to get a clean, bulleted list of topics.
-      </p>
-
+    <div className="mx-auto max-w-2xl space-y-6 sm:space-y-8">
+      <PageHeader
+        icon={BookOpenCheck}
+        eyebrow="Syllabus Negotiator"
+        title="Syllabus Negotiator"
+        description="Paste Kuddus's syllabus announcement below to get a clean, bulleted list of topics."
+      />
+      <Card>
       <form onSubmit={handleSubmit} className="space-y-4">
         <TextArea
           id="syllabusText"
@@ -98,7 +104,14 @@ export const SyllabusNegotiatorPage = () => {
           >
             Filter Against Curriculum
           </Button>
-          <Button type="button" variant="secondary" onClick={handleTryExample} disabled={isLoading}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={handleTryExample}
+            disabled={isLoading}
+            className="border-amber-300 text-amber-700 hover:bg-amber-50"
+          >
+            <Sparkles className="h-4 w-4" aria-hidden="true" />
             Try Kuddus&apos;s example syllabus
           </Button>
         </div>
@@ -115,38 +128,57 @@ export const SyllabusNegotiatorPage = () => {
         )}
       </form>
 
-      {data?.topics && (
-        <div className="mt-6 border-t border-slate-200 pt-6">
-          {data.degraded && (
-            <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-              The AI service is temporarily unavailable, so this result may be incomplete or
-              generic. Please try again shortly.
-            </div>
-          )}
-          <h2 className="mb-3 text-sm font-medium text-slate-700">Topics</h2>
-          {data.topics.length === 0 ? (
-            <p className="text-sm text-slate-500">
-              {data.degraded
-                ? "No topics could be generated while the AI service is unavailable."
-                : "No topics were extracted from this text."}
-            </p>
-          ) : (
-            <ul className="space-y-2">
-              {data.topics.map((topic, index) => (
-                <li
-                  key={`${topic}-${index}`}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800"
-                >
-                  {topic}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
+      <AnimatePresence>
+        {data?.topics && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="mt-6 border-t border-slate-200 pt-6"
+          >
+            {data.degraded && (
+              <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                The AI service is temporarily unavailable, so this result may be incomplete or
+                generic. Please try again shortly.
+              </div>
+            )}
+            <h2 className="mb-3 flex items-center gap-1.5 text-sm font-medium text-slate-700">
+              <ListChecks className="h-4 w-4 text-amber-500" aria-hidden="true" />
+              Topics
+            </h2>
+            {data.topics.length === 0 ? (
+              <p className="text-sm text-slate-500">
+                {data.degraded
+                  ? "No topics could be generated while the AI service is unavailable."
+                  : "No topics were extracted from this text."}
+              </p>
+            ) : (
+              <motion.ul className="space-y-2" initial="hidden" animate="visible" variants={staggerParent}>
+                {data.topics.map((topic, index) => (
+                  <motion.li
+                    key={`${topic}-${index}`}
+                    variants={staggerItem}
+                    className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800"
+                  >
+                    {topic}
+                  </motion.li>
+                ))}
+              </motion.ul>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {filterData && (
-        <div className="mt-6 border-t border-slate-200 pt-6">
+      <AnimatePresence>
+        {filterData && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="mt-6 border-t border-slate-200 pt-6"
+          >
           {filterData.degraded && (
             <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               The AI service is temporarily unavailable, so this result may be incomplete.
@@ -154,31 +186,41 @@ export const SyllabusNegotiatorPage = () => {
             </div>
           )}
 
-          <h2 className="mb-3 text-sm font-medium text-slate-700">Kept — matched against the curriculum</h2>
+          <h2 className="mb-3 flex items-center gap-1.5 text-sm font-medium text-slate-700">
+            <ListChecks className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+            Kept — matched against the curriculum
+          </h2>
           {filterData.kept.length === 0 ? (
             <p className="mb-4 text-sm text-slate-500">No topics matched the curriculum.</p>
           ) : (
-            <div className="mb-4 space-y-2">
+            <motion.div className="mb-4 space-y-2" initial="hidden" animate="visible" variants={staggerParent}>
               {filterData.kept.map((item, index) => (
-                <KeptTopicCard key={`${item.topic}-${index}`} {...item} />
+                <motion.div key={`${item.topic}-${index}`} variants={staggerItem}>
+                  <KeptTopicCard {...item} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
 
           <h2 className="mb-3 text-sm font-medium text-slate-700">Discarded — not examinable</h2>
           {filterData.discarded.length === 0 ? (
             <p className="text-sm text-slate-500">Nothing was discarded.</p>
           ) : (
-            <div className="space-y-2">
+            <motion.div className="space-y-2" initial="hidden" animate="visible" variants={staggerParent}>
               {filterData.discarded.map((item, index) => (
-                <DiscardedTopicRow key={`${item.topic}-${index}`} {...item} />
+                <motion.div key={`${item.topic}-${index}`} variants={staggerItem}>
+                  <DiscardedTopicRow {...item} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
 
           {filterData.kept.length > 0 && (
-            <div className="mt-6 border-t border-slate-200 pt-6">
-              <h2 className="mb-3 text-sm font-medium text-slate-700">Generate Study Plan</h2>
+            <motion.div variants={fadeUp} initial="hidden" animate="visible" className="mt-6 border-t border-slate-200 pt-6">
+              <h2 className="mb-3 flex items-center gap-1.5 text-sm font-medium text-slate-700">
+                <CalendarRange className="h-4 w-4 text-amber-500" aria-hidden="true" />
+                Generate Study Plan
+              </h2>
               <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <TextInput
                   id="testDate"
@@ -227,18 +269,25 @@ export const SyllabusNegotiatorPage = () => {
               )}
 
               {planData?.plan && (
-                <div className="mt-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="mt-6"
+                >
                   <StudyPlanCalendar
                     plan={planData.plan}
                     warning={planData.warning}
                     degraded={planData.degraded}
                   />
-                </div>
+                </motion.div>
               )}
-            </div>
+            </motion.div>
           )}
-        </div>
-      )}
-    </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      </Card>
+    </div>
   );
 };

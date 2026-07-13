@@ -3,10 +3,13 @@ import { success } from "../utils/apiResponse.js";
 import { env } from "../config/env.js";
 import { parseDurationMs } from "../utils/parseDuration.js";
 
+// sameSite "none" is required cross-site (frontend and backend live on separate
+// Render domains) and mandates secure:true — browsers reject "none" cookies
+// otherwise. Falls back to "lax"/non-secure in local dev over http://localhost.
 const REFRESH_COOKIE_OPTS = {
   httpOnly: true,
   secure: env.nodeEnv === "production",
-  sameSite: "strict",
+  sameSite: env.nodeEnv === "production" ? "none" : "lax",
   maxAge: parseDurationMs(env.refreshTokenExpiresIn),
 };
 

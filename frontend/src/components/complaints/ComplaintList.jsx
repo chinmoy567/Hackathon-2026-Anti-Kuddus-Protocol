@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGetComplaintsQuery, useUpdateComplaintStatusMutation } from "../../store/apiSlice.js";
 import { selectCurrentUser } from "../../store/authSlice.js";
 import { ComplaintCard } from "./ComplaintCard.jsx";
 import { Skeleton } from "../ui/Skeleton.jsx";
 import { useToast } from "../ui/Toast.jsx";
+import { staggerParent, staggerItem } from "../../utils/motion.js";
 
 // Teacher/captain_2nd/captain_3rd only — captain_1st never reaches this
 // component (AppLayout omits the nav path; the server would 403 regardless).
@@ -29,7 +31,7 @@ export const ComplaintList = () => {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-semibold text-slate-900">Complaints</h2>
         <select
           value={status}
@@ -37,8 +39,8 @@ export const ComplaintList = () => {
             setStatus(e.target.value);
             setPage(1);
           }}
-          className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 transition-colors
-            duration-150 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 transition-colors
+            duration-150 focus:outline-none focus:ring-2 focus:ring-amber-400 sm:w-auto"
         >
           <option value="">All statuses</option>
           <option value="pending">Pending</option>
@@ -61,18 +63,31 @@ export const ComplaintList = () => {
           No complaints yet.
         </p>
       ) : (
-        <div className="space-y-3">
-          {data.items.map((complaint) => (
-            <ComplaintCard
-              key={complaint._id}
-              complaint={complaint}
-              canAdjudicate={canAdjudicate}
-              isUpdating={isUpdating}
-              onValidate={(id) => handleAdjudicate(id, "validated")}
-              onReject={(id) => handleAdjudicate(id, "rejected")}
-            />
-          ))}
-        </div>
+        <motion.div
+          className="space-y-3"
+          initial="hidden"
+          animate="visible"
+          variants={staggerParent}
+        >
+          <AnimatePresence initial={false}>
+            {data.items.map((complaint) => (
+              <motion.div
+                key={complaint._id}
+                layout
+                variants={staggerItem}
+                exit={{ opacity: 0, x: -12, transition: { duration: 0.2 } }}
+              >
+                <ComplaintCard
+                  complaint={complaint}
+                  canAdjudicate={canAdjudicate}
+                  isUpdating={isUpdating}
+                  onValidate={(id) => handleAdjudicate(id, "validated")}
+                  onReject={(id) => handleAdjudicate(id, "rejected")}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       )}
 
       {data && data.totalPages > 1 && (
@@ -80,7 +95,7 @@ export const ComplaintList = () => {
           <button
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
-            className="rounded-lg border border-slate-300 px-3 py-1 transition-colors duration-150 hover:bg-slate-50 disabled:opacity-40"
+            className="rounded-lg border border-slate-300 px-3 py-1 transition-colors duration-150 hover:bg-slate-50 active:scale-95 disabled:opacity-40 disabled:active:scale-100"
           >
             Prev
           </button>
@@ -90,7 +105,7 @@ export const ComplaintList = () => {
           <button
             disabled={page >= data.totalPages}
             onClick={() => setPage((p) => p + 1)}
-            className="rounded-lg border border-slate-300 px-3 py-1 transition-colors duration-150 hover:bg-slate-50 disabled:opacity-40"
+            className="rounded-lg border border-slate-300 px-3 py-1 transition-colors duration-150 hover:bg-slate-50 active:scale-95 disabled:opacity-40 disabled:active:scale-100"
           >
             Next
           </button>

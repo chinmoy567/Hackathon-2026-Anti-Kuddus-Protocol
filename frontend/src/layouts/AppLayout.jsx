@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet, Link, useNavigate, NavLink } from "react-router-dom";
+import { Outlet, Link, useNavigate, useLocation, NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Siren, Menu, X, LogOut } from "lucide-react";
 import { useAuth } from "../hooks/useAuth.js";
@@ -20,6 +20,7 @@ const AppShell = () => {
   useSosOfflineSync();
   const { user, role, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -34,12 +35,22 @@ const AppShell = () => {
     { to: "/fact-check", label: "Fact-Checker" },
     ...(role === "student" ? [{ to: "/complaints/new", label: "New Complaint" }] : []),
     ...(role === "student" ? [{ to: "/ledger/new", label: "Log Ledger Entry" }] : []),
+    ...(role === "teacher" ? [{ to: "/seat-planner/roster", label: "Seat Planner" }] : []),
     ...(SOS_DASHBOARD_ROLES.includes(role) ? [{ to: "/sos", label: "SOS Alerts" }] : []),
   ];
 
-  const navLinkClass = ({ isActive }) =>
+  // Seat Planner has two routes (roster + grid); either should highlight the same nav item.
+  const isSeatPlannerActive = (to) =>
+    to === "/seat-planner/roster" && location.pathname.startsWith("/seat-planner");
+
+  const navLinkClass = (to) => ({ isActive }) =>
     `rounded-lg px-3.5 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${
-      isActive ? "bg-white/10 text-white" : "text-slate-300 hover:bg-white/5 hover:text-white"
+      isActive || isSeatPlannerActive(to) ? "bg-white/10 text-white" : "text-slate-300 hover:bg-white/5 hover:text-white"
+    }`;
+
+  const mobileNavLinkClass = (to) => ({ isActive }) =>
+    `block rounded-xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
+      isActive || isSeatPlannerActive(to) ? "bg-white/10 text-white" : "text-slate-200 hover:bg-white/5 hover:text-white"
     }`;
 
   return (
@@ -63,7 +74,7 @@ const AppShell = () => {
 
           <div className="hidden items-center gap-1 lg:flex">
             {links.map((link) => (
-              <NavLink key={link.to} to={link.to} className={navLinkClass}>
+              <NavLink key={link.to} to={link.to} className={navLinkClass(link.to)}>
                 {link.label}
               </NavLink>
             ))}
@@ -109,11 +120,7 @@ const AppShell = () => {
                     key={link.to}
                     to={link.to}
                     onClick={() => setMenuOpen(false)}
-                    className={({ isActive }) =>
-                      `block rounded-xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
-                        isActive ? "bg-white/10 text-white" : "text-slate-200 hover:bg-white/5 hover:text-white"
-                      }`
-                    }
+                    className={mobileNavLinkClass(link.to)}
                   >
                     {link.label}
                   </NavLink>

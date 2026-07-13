@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Button } from "../ui/Button.jsx";
 
 const STATUS_STYLES = {
@@ -13,7 +14,9 @@ const STATUS_LABELS = {
 // Read by captain_2nd/captain_3rd/teacher only — captain_1st never reaches
 // this component (API.md §11 GET /sos/active excludes captain_1st entirely).
 export const SosAlertCard = ({ alert, canAct, isUpdating, onAcknowledge, onResolve }) => (
-  <div
+  <motion.div
+    whileHover={{ y: -2 }}
+    transition={{ duration: 0.2 }}
     className={`rounded-xl border p-4 transition-shadow duration-150 hover:shadow-md ${
       alert.status === "active" ? "border-rose-300 bg-rose-50" : "border-slate-200 bg-white"
     }`}
@@ -27,7 +30,15 @@ export const SosAlertCard = ({ alert, canAct, isUpdating, onAcknowledge, onResol
         </p>
         <p className="mt-0.5 text-xs text-slate-400">{new Date(alert.occurredAt).toLocaleTimeString()}</p>
       </div>
-      <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLES[alert.status]}`}>
+      <span
+        className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLES[alert.status]}`}
+      >
+        {alert.status === "active" && (
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-500 opacity-75" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-rose-500" />
+          </span>
+        )}
         {STATUS_LABELS[alert.status]}
       </span>
     </div>
@@ -43,5 +54,5 @@ export const SosAlertCard = ({ alert, canAct, isUpdating, onAcknowledge, onResol
         </Button>
       </div>
     )}
-  </div>
+  </motion.div>
 );

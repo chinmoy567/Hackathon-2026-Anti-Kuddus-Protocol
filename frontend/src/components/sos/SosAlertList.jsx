@@ -1,9 +1,11 @@
 import { useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGetActiveSosQuery, useAcknowledgeSosMutation, useResolveSosMutation } from "../../store/apiSlice.js";
 import { selectCurrentUser } from "../../store/authSlice.js";
 import { SosAlertCard } from "./SosAlertCard.jsx";
 import { Skeleton } from "../ui/Skeleton.jsx";
 import { useToast } from "../ui/Toast.jsx";
+import { staggerParent, staggerItem } from "../../utils/motion.js";
 
 // Only captain_2nd/captain_3rd can acknowledge/resolve; teacher sees the
 // same list read-only (API.md §11 PATCH endpoints).
@@ -60,17 +62,25 @@ export const SosAlertList = () => {
   }
 
   return (
-    <div className="space-y-3">
-      {data.alerts.map((alert) => (
-        <SosAlertCard
-          key={alert.id}
-          alert={alert}
-          canAct={canAct}
-          isUpdating={isAcknowledging || isResolving}
-          onAcknowledge={handleAcknowledge}
-          onResolve={handleResolve}
-        />
-      ))}
-    </div>
+    <motion.div className="space-y-3" initial="hidden" animate="visible" variants={staggerParent}>
+      <AnimatePresence initial={false}>
+        {data.alerts.map((alert) => (
+          <motion.div
+            key={alert.id}
+            layout
+            variants={staggerItem}
+            exit={{ opacity: 0, x: -12, transition: { duration: 0.2 } }}
+          >
+            <SosAlertCard
+              alert={alert}
+              canAct={canAct}
+              isUpdating={isAcknowledging || isResolving}
+              onAcknowledge={handleAcknowledge}
+              onResolve={handleResolve}
+            />
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </motion.div>
   );
 };

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { ScrollText } from "lucide-react";
 import { useGetLedgerSummaryQuery } from "../store/apiSlice.js";
 import { useLedgerSocket } from "../hooks/useLedgerSocket.js";
 import { LedgerLiveCounters } from "../components/ledger/LedgerLiveCounters.jsx";
@@ -7,6 +9,8 @@ import { CaloricDisparityPanel } from "../components/ledger/CaloricDisparityPane
 import { WeaponryConversionPanel } from "../components/ledger/WeaponryConversionPanel.jsx";
 import { Card } from "../components/ui/Card.jsx";
 import { Skeleton } from "../components/ui/Skeleton.jsx";
+import { PageHeader } from "../components/ui/PageHeader.jsx";
+import { fadeUp, staggerParent } from "../utils/motion.js";
 
 const GROUP_BY_OPTIONS = [
   { value: "day", label: "Day" },
@@ -19,24 +23,31 @@ export const LedgerDashboardPage = () => {
   useLedgerSocket();
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">Corruption Ledger</h1>
-        <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1">
-          {GROUP_BY_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => setGroupBy(option.value)}
-              className={`rounded-md px-3 py-1 text-sm transition-colors duration-150 ${
-                groupBy === option.value ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="space-y-6 sm:space-y-8">
+      <PageHeader
+        icon={ScrollText}
+        eyebrow="Ledger"
+        title="Corruption Ledger"
+        description="Live tally of cash and tiffin extortion across the class."
+        actions={
+          <div className="flex gap-1 rounded-lg border border-white/15 bg-white/5 p-1 backdrop-blur">
+            {GROUP_BY_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setGroupBy(option.value)}
+                className={`rounded-md px-3 py-1 text-sm font-medium transition-colors duration-150 ${
+                  groupBy === option.value
+                    ? "bg-gradient-to-r from-amber-400 to-rose-500 text-slate-950"
+                    : "text-slate-300 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        }
+      />
 
       {isLoading ? (
         <div className="space-y-6">
@@ -48,9 +59,11 @@ export const LedgerDashboardPage = () => {
           <p className="text-sm text-rose-600">Failed to load ledger summary.</p>
         </Card>
       ) : (
-        <>
-          <LedgerLiveCounters cashTotal={data.cashTotal} foodTotal={data.foodTotal} />
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <motion.div className="space-y-6" initial="hidden" animate="visible" variants={staggerParent}>
+          <motion.div variants={fadeUp}>
+            <LedgerLiveCounters cashTotal={data.cashTotal} foodTotal={data.foodTotal} />
+          </motion.div>
+          <motion.div variants={fadeUp} className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <Card>
               <LedgerTimeSeriesChart
                 title="Cash extorted over time"
@@ -69,12 +82,12 @@ export const LedgerDashboardPage = () => {
                 unit="items"
               />
             </Card>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          </motion.div>
+          <motion.div variants={fadeUp} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <CaloricDisparityPanel caloricSurplus={data.caloricSurplus} />
             <WeaponryConversionPanel conversions={data.conversions} />
-          </div>
-        </>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );

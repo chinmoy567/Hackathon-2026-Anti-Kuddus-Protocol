@@ -1,7 +1,13 @@
+import { motion } from "framer-motion";
+
 // Kuddus's energy expenditure reads as a deliberate zero (indoor Ludu
 // lifestyle), not a missing-data bug — the joke is part of the spec.
 export const CaloricDisparityPanel = ({ caloricSurplus }) => (
-  <div className="rounded-2xl border border-slate-200 bg-white p-5">
+  <motion.div
+    whileHover={{ y: -2 }}
+    transition={{ duration: 0.2 }}
+    className="rounded-2xl border border-slate-200 bg-white p-5 transition-shadow duration-150 hover:shadow-md"
+  >
     <h3 className="text-sm font-medium text-slate-600">Caloric vs. Kinetic Disparity</h3>
     <p className="mt-2 text-4xl font-semibold tracking-tight text-slate-900">
       {caloricSurplus.surplus.toLocaleString()}{" "}
@@ -19,5 +25,5 @@ export const CaloricDisparityPanel = ({ caloricSurplus }) => (
         </p>
       </div>
     </div>
-  </div>
+  </motion.div>
 );
